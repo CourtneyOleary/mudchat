@@ -16,6 +16,9 @@
 
     <!-- Custom CSS -->
     <link href="css/simple-sidebar.css" rel="stylesheet">
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+    <script src="js/handlebars-v4.0.2.js"></script>
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -39,7 +42,7 @@
                     </a>
                 </li>
                 <li data-toggle="collapse" data-target="#chats">
-                    <a href="#">Open Chats<span class="arrow"></span></a>
+                    <a href="#" id='open-chats'>Open Chats<span class="arrow"></span></a>
                 </li>
                 <ul class="sub-menu collapse" id="chats">
                     <li><a href="#">Chat with Jimmy</a></li>
@@ -47,7 +50,7 @@
                     <li><a href="#">OHH HAHAHAHHAA!!s</a></li>
                 </ul>
                 <li data-toggle="collapse" data-target="#peeps">
-                    <a href="#">Mud People<span class="arrow"></span></a>
+                    <a href="#" id='mud-people'>Mud People<span class="arrow"></span></a>
                 </li>
                 <ul class="sub-menu collapse" id="peeps">
                     <li><a href="#">Timmy McGee</a></li>
@@ -57,7 +60,7 @@
                     <li><a href="#">Aimee Aims</a></li>
                 </ul>
                 <li>
-                    <a href="#">A Nice Time to be Had</a>
+                    <a href="#" id="nice-time">A Nice Time to be Had</a>
                 </li>
             </ul>
         </div>
@@ -75,8 +78,8 @@
 
 
             </div>
-            <div id="input-conatainer">
-                <button> Hello the Nice Mans</button>
+            <div id="input-container">
+                <button id="nice-mans"> Hello the Nice Mans</button>
             </div>
         </div>
         <!-- /#page-content-wrapper -->
@@ -89,15 +92,66 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/controller.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.js"></script>
 
     <!-- Menu Toggle Script -->
     <script>
+    userListRef = new Firebase('https://mudchat.firebaseio.com/users/');
+    var app = new Controller();
+
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
 
+    $("#open-chats").click(function() {
+        app.clearDiv(document.getElementById('page-content-wrapper'));
+        var template = $('#hidden-template').html();
+        $('#page-content-wrapper').append(template);
+    });
 
+    $("#mud-people").click(function() {
+        app.clearDiv(document.getElementById('page-content-wrapper'));
+        var template = $('#hidden-template').html();
+        $('#page-content-wrapper').append(template);
+        $('#nameInput').keypress(function (e) {
+        console.log(e)
+        if (e.keyCode == 13) {
+            console.log('la la laaaa!')
+          var name = $('#nameInput').val();
+          userListRef.push({name: name})
+        }
+      });
+    });
+
+    $("#nice-time").click(function() {
+        app.clearDiv(document.getElementById('page-content-wrapper'));
+        app.buildAddUser();
+        var template = $('#hidden-template').html();
+        $('#page-content-wrapper').append(template);
+    });
+
+    $("#nice-mans").click(function() {
+        var template = $('#nice-mans-template').html();
+        $('#page-content-wrapper').append(template);
+    });
+
+
+
+
+
+
+    </script>
+
+    <script id="hidden-template" type="text/x-custom-template">
+        console.log(userListRef);
+        {{userListRef.name}}
+        <input type='text' id='nameInput' placeholder='Name'>
+    </script>
+
+    <script id="nice-mans-template" type="text/x-custom-template">
+        <div class="fruits"> FORCEFULLY ENJOY THE FRUITS OF YOUR LABOUR.</di>
     </script>
 
 </body>
